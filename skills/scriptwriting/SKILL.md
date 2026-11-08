@@ -25,7 +25,7 @@ Write scripts people actually watch to the end.
    - `MID-VIDEO REHOOK (~50%)` — re-open a loop before the natural drop-off point
    - `PAYOFF (final ~10%)` — deliver the promised result clearly
    - `CTA` — one action only (subscribe/next video/product), ≤ 15s
-3. **Write the VO script** with timing marks every section: `[0:00]`, `[0:20]`… Keep sentences short (≤ 20 words). Add `[B-ROLL: ...]` and `[ON-SCREEN TEXT: ...]` cues where they carry meaning.
+3. **Write the VO script** with timing marks every section: `[0:00]`, `[0:20]`… Keep sentences short (≤ 20 words). Add `[B-ROLL: ...]`, `[ON-SCREEN TEXT: ...]` and `[SFX: ...]` cues (sound effects — e.g. whoosh, ding, keyboard clicks) wherever they carry meaning; `video-creation` consumes the `[SFX:]` cues.
 4. **Retention passes** (do all three, silently):
    - Cut throat-clearing first sentences; start mid-energy
    - Add a curiosity gap every 30–45s

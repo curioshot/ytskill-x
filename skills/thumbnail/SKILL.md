@@ -1,7 +1,7 @@
 ---
 name: thumbnail
 description: Generate YouTube thumbnail concepts and render them. Produces CTR-optimized concepts (text ≤ 4 words, face/emotion, one focal point) and, if tooling allows, a rendered 1280×720 image. Use when asked for thumbnails, thumbnail ideas, or a clickable cover image.
-compatibility: Agent with shell access. Pillow/ImageMagick or an image-generation tool for rendering; otherwise returns production-ready concept prompts.
+compatibility: Agent with shell access. Prefers coded rendering (Python + Pillow or ImageMagick) — required when the model is NOT vision capable; image-generation tools optional. Produces BOTH thumbnail.png and thumbnail.jpg.
 ---
 
 # Thumbnail
@@ -25,12 +25,13 @@ Concept and render clickable thumbnails.
    - `ctr_rationale` — why a scrolling human would tap (curiosity gap, face reaction, number, contrast)
    - `risk` — any deception/accuracy issue (flag; don't produce misleading thumbnails)
 3. **Score and pick** the best concept with the user (or auto-pick if user said "just decide").
-4. **Render** (if `render` mode and tooling exists):
-   - With Pillow: gradient/solid background → optional face cutout centered-right → bold text left in all-caps with thick outline/shadow → export `1280×720` JPEG quality 90 to `./project/<slug>/thumbnail.jpg`. Compress < 2MB (YT limit).
-   - With an image generator: ready-to-paste prompt including all the above (style, colors, text, composition, 1280×720).
-   - If neither exists: output the full production brief + prompt; do not pretend an image was made.
+4. **Render in code** (always — the model is often not vision capable, so the thumbnail must be drawable without "seeing"):
+   - With Pillow (default): gradient/solid background → optional face cutout centered-right (only if a photo exists in `assets/`) → bold text left in all-caps with thick outline/shadow → export **both**: `./project/<slug>/thumbnail.png` (master) and `./project/<slug>/thumbnail.jpg` (JPEG quality 90, < 2MB, YT limit). 1280×720.
+   - With ImageMagick: `convert` equivalent (`-size 1280x720 gradient:... -annotate ...`), same two outputs.
+   - Only if a vision/image-capable model AND image tool exist: an AI image for extra polish — then still export both png+jpg and keep the coded version as fallback.
+   - If no image tooling at all: output the full production brief; do not pretend an image was made.
 5. **Variants**: produce 2 variants for A/B testing (different text or face). YouTube supports A/B test thumbnails — note this in output.
-6. **Verify** rendered file: exists, 1280×720, < 2MB; open it (Read tool if available) and check text isn't clipped and contrast is readable.
+6. **Verify** both files: exist, 1280×720, jpg < 2MB; if the agent can view images, open thumbnail.jpg and check text isn't clipped and contrast is readable. If not vision capable, verify geometrically — text bbox inside canvas, contrast ratio computed in code (e.g. WCAG contrast ≥ 4.5:1 for the text vs background).
 
 ## Quality checks
 
@@ -41,4 +42,4 @@ Concept and render clickable thumbnails.
 
 ## Output
 
-`./project/<slug>/thumbnail.jpg` (or concept brief) + the chosen concept described in `./project/<slug>/thumbnail.md`. Route to `youtube-seo`.
+`./project/<slug>/thumbnail.png` **and** `./project/<slug>/thumbnail.jpg` (both mandatory — jpg for the YouTube API, png as master) + the chosen concept described in `./project/<slug>/thumbnail.md`. Route to `youtube-seo`.

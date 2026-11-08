@@ -30,7 +30,7 @@ Package the video for discovery.
    - Links/resources/social placeholders marked `TODO(user)`
    - 3–5 hashtags (first 3 render above title; `#shorts` only for shorts)
 6. **Tags** — 8–15: exact match primary, long-tails, channel-relevant. Tags matter least; say so.
-7. **Write** `./project/<slug>/seo.json`: `{ titles: [...], description, tags: [...], primary_keyword, secondary_keywords: [...], chapters: [...] }` + human-readable `seo.md`.
+7. **Write** `./project/<slug>/seo.json`: `{ titles: [...], description, tags: [...], primary_keyword, secondary_keywords: [...], chapters: [...] }` + human-readable `seo.md` + **plain-text files** `./project/<slug>/title.txt` (recommended title only, single line) and `./project/<slug>/description.txt` (full description, exactly as it should appear on YouTube). These two txt files are the canonical upload payload — `publishing` reads them, not `seo.json`.
 
 ## Quality checks
 
@@ -41,4 +41,4 @@ Package the video for discovery.
 
 ## Output
 
-`seo.md` + `seo.json`. End with recommended title + route to `publishing`.
+`./project/<slug>/title.txt` + `./project/<slug>/description.txt` (canonical) plus `seo.md` + `seo.json` (working files). End with the recommended title + route to `publishing`.

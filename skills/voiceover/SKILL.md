@@ -1,7 +1,7 @@
 ---
 name: voiceover
 description: Generate AI narration for a YouTube script. Produces a voiceover audio file from script.md using edge-tts (free, no key) or ElevenLabs (premium). Use when asked to generate narration, voice over, TTS, or an audio track for a video.
-compatibility: Agent with shell access. edge-tts via pip (free) or ELEVENLABS_API_KEY for premium voices.
+compatibility: Agent with shell access. TTS engines: `edge-tts` via pip (free) or ElevenLabs API (`ELEVENLABS_API_KEY`). No TTS available → deliver the VO text and say audio could not be generated; do not fake the file. Sound effects are NOT this skill's job — they are mixed by `video-creation` (see `[SFX:]` cues in the script).
 ---
 
 # Voiceover

@@ -37,7 +37,19 @@ Skills call the YouTube Data API v3 and optional LLM/media providers. Copy `.env
 
 - Every skill is self-contained `SKILL.md` (+ optional `references/`).
 - `$YOUTUBE_API_KEY` = YouTube Data API v3 key. OAuth2 is required only for `publishing`.
-- All generated artifacts go to `./project/<slug>/`.
+- **Videos are made entirely by code + TTS** — ffmpeg/Pillow render every frame, narration via edge-tts (free) or ElevenLabs, sound effects via ffmpeg-synthesized audio or licensed royalty-free SFX (Freesound/Pixabay Audio). No GUI editor anywhere.
+- Each video lives in `./project/<slug>/` and **must contain**:
+
+  ```
+  project/xyz/
+    xyz.mp4           # the video — named after the folder
+    title.txt         # final YouTube title
+    description.txt   # final YouTube description
+    thumbnail.png     # master, rendered/drawn in code (Pillow/ImageMagick)
+    thumbnail.jpg     # JPEG <2MB for the YouTube API
+  ```
+
+  `title.txt` + `description.txt` + `<slug>.mp4` are the canonical upload payload consumed by `publishing`.
 - `publishing` is dry-run by default; real uploads require explicit confirmation.
 
 ## License

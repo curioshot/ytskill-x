@@ -10,8 +10,8 @@ Upload videos to YouTube — safely.
 
 ## Inputs
 
-- Video file (`./project/<slug>/final.mp4`) and metadata (`./project/<slug>/seo.json`)
-- Thumbnail (`./project/<slug>/thumbnail.jpg`) — optional but strongly default
+- Video file `./project/<slug>/<slug>.mp4` (named after the folder) and metadata **plain-text files** `./project/<slug>/title.txt` + `./project/<slug>/description.txt` (written by `youtube-seo`); fall back to `seo.json` only if the txt files are missing
+- Thumbnail `./project/<slug>/thumbnail.jpg` (or `thumbnail.png` — must be < 2MB) — optional but strongly default
 - Settings: `privacy` = `private` | `unlisted` | `public` (default `private`), `categoryId` (default `22`), `madeForKids` (default false), `publishAt` (optional RFC3339 scheduled time), `playlistId` optional
 - **Explicit confirmation is mandatory before any real upload.**
 
@@ -22,7 +22,7 @@ Upload videos to YouTube — safely.
 
 ## Workflow
 
-1. **Pre-flight** (always run first): file exists and is a valid MP4 (`ffprobe`), `seo.json` parses, title ≤ 100 chars, description ≤ 5000, tags ≤ 500 total, madeForKids is a boolean, quota remaining estimate (warn if a publish is attempted today after heavy API use).
+1. **Pre-flight** (always run first): `<slug>.mp4` exists and is a valid MP4 (`ffprobe`), `title.txt`/`description.txt` non-empty, title ≤ 100 chars, description ≤ 5000, madeForKids is a boolean, quota remaining estimate (warn if a publish is attempted today after heavy API use).
 2. **Dry run** (default): print the full metadata payload + what would be uploaded + privacy status. Stop here unless the user explicitly confirms with the file path typed back or `--confirm` semantics.
 3. **Get access token**:
 
@@ -37,10 +37,10 @@ Upload videos to YouTube — safely.
    ```bash
    curl -s -X POST "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status" \
      -H "Authorization: Bearer $ACCESS_TOKEN" -H "Content-Type: application/json; charset=UTF-8" \
-     -H "X-Upload-Content-Type: video/mp4" -H "X-Upload-Content-Length: $(stat -c%s final.mp4)" \
+     -H "X-Upload-Content-Type: video/mp4" -H "X-Upload-Content-Length: $(stat -c%s <slug>.mp4)" \
      -d '{"snippet":{"title":"...","description":"...","tags":["..."],"categoryId":"22"},
           "status":{"privacyStatus":"private","selfDeclaredMadeForKids":false}}' -D - -o /dev/null
-   # then: curl -X PUT "$SESSION_URI" -H "Content-Type: video/mp4" --data-binary @final.mp4
+   # then: curl -X PUT "$SESSION_URI" -H "Content-Type: video/mp4" --data-binary @<slug>.mp4
    ```
 
    Quota cost ≈ 1600 units — warn user of daily budget (10,000 default).
@@ -64,5 +64,5 @@ Upload videos to YouTube — safely.
 
 ## Quality checks
 
-- All uploaded metadata comes from `seo.json` — no silent changes.
+- All uploaded metadata comes from `title.txt`/`description.txt` (or `seo.json`) — no silent changes.
 - madeForKids must match the content; defaulting to true on content not made for kids violates COPPA/YouTube policy — ask when unclear.
